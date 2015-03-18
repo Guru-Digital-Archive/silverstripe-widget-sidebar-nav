@@ -6,7 +6,7 @@
     <div class="panel-heading " role="tab" id="heading-$ID">
         <h4 class="panel-title $LinkingMode">
             <a href="$Link" id="title-$ID" class="<%if $LinkingMode != "current" && $LinkingMode != "section" %>collapsed <%end_if%>$LinkingMode" title="$Title.XML" data-toggle="collapse" data-target="#collapse-$ID" aria-controls="#collapse-$ID" data-parent="#accordion-$Level(1).ID">
-               <i class="<% if $Children %>glyphicon glyphicon-chevron-down<% else %>right<% end_if %>"></i>
+               <% if $Children %><span class="toggle"><i class="glyphicon glyphicon-chevron-down"></i></span><% end_if %>
                 $MenuTitle.XML
             </a>
         </h4>
