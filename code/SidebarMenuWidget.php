@@ -2,31 +2,31 @@
 
 class SidebarMenuWidget extends Widget {
 
-    private static $db = array(
+    private static $db        = array(
         "MenuRoot" => "Enum(array('Root', 'Selected Page', 'Current Page', 'Root of Current Page'))",
-        "ShowAll" => "Boolean"
+        "ShowAll"  => "Boolean"
     );
-    private static $has_one = array(
+    private static $has_one   = array(
         "RootPage" => "SiteTree"
     );
-    private $currentRootPage = null;
+    private $currentRootPage  = null;
     private $currentMenuItems = null;
 
     public function getCMSFields() {
-        $fields = parent::getCMSFields();
-        $fields->addFieldToTab("Root.Main", $fields->dataFieldByName("WidgetName"), "Enabled");
-        $fields->addFieldToTab("Root.Main", $fields->dataFieldByName("WidgetLabel"), "Enabled");
-        $fields->dataFieldByName("MenuRoot")->setDescription("Select from where the menu starts.<br/>
+        $fields        = parent::getCMSFields();
+        $fields->add($MenuRootField = DropdownField::Create(
+                        'MenuRoot', 'Menu Root', singleton('SidebarMenuWidget')->dbObject('MenuRoot')->enumValues()));
+        $MenuRootField->setDescription("Select from where the menu starts.<br/>
                  <strong>Root</strong>: Show the entire page tree.<br/>
                  <strong>Selected Page</strong>: Show the children of a specific page.<br/>
                  <strong>Current Page</strong>: Show the children of the page currently being viewed.<br/>
                  <strong>Root of Current Page</strong>: Show children of the current pages top most page.<br/>");
-        $fields->dataFieldByName("ShowAll")->setDescription("Show all pages, even those who are marked as not to show in menus");
-        $fields->replaceField("RootPageID", $RootPageField = TreeDropdownField::Create("RootPageID", "Root Page", "SiteTree")
-                ->setDescription("If <strong>MenuRoot</strong> is set to &quot;Selected Page&quot; set which page to start the menu from")
-        );
+        $fields->add($ShowAllField  = CheckboxField::Create('ShowAll', 'Show All'));
+        $ShowAllField->setDescription("Show all pages, even those who are marked as not to show in menus");
+        $fields->add($RootPageField = TreeDropdownField::Create("RootPageID", "Root Page", "SiteTree")
+                ->setDescription("If <strong>MenuRoot</strong> is set to &quot;Selected Page&quot; set which page to start the menu from"));
         $RootPageField->displayIf("MenuRoot")->isEqualTo("Selected Page");
-        $fields->fieldByName("Root.Main")->Fields()->changeFieldOrder(array("WidgetName", "WidgetLabel", "Enabled", "MenuRoot", "RootPageID", "ShowAll"));
+        $fields->changeFieldOrder(array("WidgetName", "WidgetLabel", "Enabled", "MenuRoot", "RootPageID", "ShowAll"));
         return $fields;
     }
 
