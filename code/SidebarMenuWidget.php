@@ -1,6 +1,7 @@
 <?php
 
-class SidebarMenuWidget extends Widget {
+class SidebarMenuWidget extends Widget
+{
 
     private static $db        = array(
         "MenuRoot" => "Enum(array('Root', 'Selected Page', 'Current Page', 'Root of Current Page'))",
@@ -12,7 +13,8 @@ class SidebarMenuWidget extends Widget {
     private $currentRootPage  = null;
     private $currentMenuItems = null;
 
-    public function getCMSFields() {
+    public function getCMSFields()
+    {
         $fields        = parent::getCMSFields();
         $fields->add($MenuRootField = DropdownField::Create(
                         'MenuRoot', 'Menu Root', singleton('SidebarMenuWidget')->dbObject('MenuRoot')->enumValues()));
@@ -45,11 +47,13 @@ class SidebarMenuWidget extends Widget {
      */
     private static $description = "";
 
-    public function Title() {
+    public function Title()
+    {
         return $this->WidgetLabel;
     }
 
-    public function Menu() {
+    public function Menu()
+    {
         if (!$this->currentMenuItems) {
             if ($this->MenuRoot == 'Root') {
                 if ($this->ShowAll) {
@@ -73,12 +77,13 @@ class SidebarMenuWidget extends Widget {
         return $this->currentMenuItems;
     }
 
-    public function RootPage() {
+    public function RootPage()
+    {
         if (!$this->currentRootPage) {
             $this->currentRootPage = Director::get_current_page();
             if ($this->MenuRoot == 'Selected Page' && parent::RootPage()) {
                 $this->currentRootPage = parent::RootPage();
-            } else if ($this->MenuRoot == 'Root of Current Page' || $this->MenuRoot == 'Root') {
+            } elseif ($this->MenuRoot == 'Root of Current Page' || $this->MenuRoot == 'Root') {
                 while ($this->currentRootPage->exists() && ((int) $this->currentRootPage->ParentID) !== 0) {
                     $this->currentRootPage = $this->currentRootPage->Parent();
                 }
@@ -86,5 +91,4 @@ class SidebarMenuWidget extends Widget {
         }
         return $this->currentRootPage;
     }
-
 }
